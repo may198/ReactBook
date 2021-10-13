@@ -1,5 +1,8 @@
 //Block-scope Variales
 
+import { PRIORITY_ABOVE_NORMAL } from "constants";
+import { reject } from "q";
+
 //normal variables
     function app(){
         var num = 1;
@@ -68,3 +71,110 @@
     }
     console.log(showuser(newuser));
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//Javascript Callback function
+
+    function add(nums,solve,reject){
+        if(Array.isArray(nums)){
+            let result = nums.reduce((a,b)=>a+b);
+            return result;
+        }else{
+            reject();
+        }
+    }
+
+    const answer = add([1,2],solve=>{
+            console.log(`Result is : ${result}`);
+        },()=>{
+            console.log('Something Wrong!!!');
+        });
+
+    console.log(answer);
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+//ES6 Promises
+
+    function adding(nums) {
+        return new Promise((solve,reject)=>{
+            if(Array.isArray(nums)){
+                let result = nums.reduce((a,b)=>a+b);
+                solve(result);
+            }else{
+                reject();
+            }
+        });
+        
+    }
+
+    const ans = adding([1,2]);
+    ans.then(res=>{
+        console.log(`Result is : ${res}`)
+    });
+
+    const ans2 = adding([2,3]).then(r=>{
+            console.log(`Result: ${r}`);
+        }).catch(()=>{
+            console.log('Something Wrong!');
+        });
+
+
+
+    function multiply(number) {
+        return new Promise((multi,cancle)=>{
+            if(Array.isArray(number)){
+            let result = number.reduce((a,b)=>a*b);
+            multi(result);
+            }else{
+                cancle();
+            }
+        });
+    }
+
+    multiply([2,3]).then(res=>{
+        console.log(`Mutiplication : ${res}`);
+    }).catch(()=>{
+        console.log('Something Wrong!')
+    })
+
+//Chain of then() functions, then() function return a Promise everytime, so can chain the function
+    multiply([2,3]).then(a=>{
+        return a*2;
+    }).then(b=>{
+        return b*3;
+    }).then(c=>{
+        console.log(`Final Result: ${c}`)
+    })
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//async and await , twice() is a function that doesn't need to wait until finish and let the another code run simutaneouesly
+//so, the code "This work first" render frist and then twice() function done
+
+async function twice(num){
+    let answer = await multiply(num);
+    console.log(`Twice is ${answer}`);
+}
+
+twice([2,2]) // it won't work when the parameter isn't array, any reject function won't run, this is b/c of async
+console.log('This work first')
+
+
+//To catch reject() function of the Promise
+async function multipli(num){
+    try{
+        let answer = await multiply(num);
+    console.log(`Twice is ${answer}`);
+    }
+    catch{
+        console.log('Something Wrong!')
+    }
+}
+
+multipli(1) // now it catch the reject function
